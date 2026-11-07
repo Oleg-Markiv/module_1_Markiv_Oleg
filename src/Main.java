@@ -2,51 +2,22 @@ import java.util.Scanner;
 import java.util.Random;
 
 public class Main {
-    static private class Monster {
-        static boolean task(int DC) {
-            Random random = new Random();
-            int a = random.nextInt(100 * DC);
-            int b = random.nextInt(100 * DC);
-            int trueAnswer = a + b;
-            System.out.println("Реши пример: " + a + " + " + b + " = ?");
-            Scanner sc = new Scanner(System.in);
-            int ans = sc.nextInt();
-            return trueAnswer == ans;
-        }
-    }
-
-    static private class MMonster extends Monster {
-        static boolean task(int DC) {
-            Random random = new Random();
-            int a = random.nextInt(100 * DC);
-            int b = random.nextInt(100 * DC);
-            int trueAnswer = a - b;
-            System.out.println("Реши пример: " + a + " - " + b + " = ?");
-            Scanner sc = new Scanner(System.in);
-            int ans = sc.nextInt();
-            return trueAnswer == ans;
-        }
-    }
-
     public static void main(String[] args) {
 
         String GGC = ""; // GGC - global game choice - глобальный игровой выбор
         println("Добро пожаловать в 'Дойди до замка'");
-        println("!ИНФО! Для максимально удобной игры сделайте консоль высотой в 15 строк");
-        println("!ИНФО! Пожалуйста, не перезаполняйте строки - у меня везде int!!!!!\n");
+        println("!ИНФО! Для максимально удобной игры сделайте консоль высотой в 17 строк");
+//        println("!ИНФО! Пожалуйста, не перезаполняйте строки - у меня везде int!!!!!\n");
 
         while (!GGC.equals("END")) {
-            String[] symbols = new String[8];
+            String[] symbols = new String[6];
             symbols[0] = "*"; // это герой
             symbols[1] = "@"; // это замок
             symbols[2] = "#"; // это ловушка
-            symbols[3] = "$"; // это монстр
-            symbols[4] = "_"; // это пустая клетка
-            symbols[5] = "/"; // это бревно (предмет)
-            symbols[6] = "^"; // это шлем (лечение; предмет)
-            symbols[7] = ">"; // это м-монстр
-
-            int size = 5;
+            symbols[3] = "_"; // это пустая клетка
+            symbols[4] = "/"; // это бревно (предмет)
+            symbols[5] = "^"; // это шлем (лечение; предмет)
+            int size = 6;
             int lives = 5;
             String[][][] board = new String[2][size][size];
             createBoard(board, symbols);
@@ -56,14 +27,14 @@ public class Main {
             int Hx = Integer.parseInt(board[1][0][0]); // Hx - hero x - горизонтальная координата героя
             String com = ""; // com - comment - комментарий к предыдущему ходу
 
-            println("Условные обозначения:");
+            println("\nУсловные обозначения:");
             println(" - Hero (Герой) - " + symbols[0]);
             println(" - Castle (Замок) - " + symbols[1]);
             println(" - Trap (Ловушка) - " + symbols[2]);
-            println(" - Monster (Монстр) - " + symbols[3]);
-            println(" - Space (Пустая клетка) - " + symbols[4]);
-            println(" - Beam (Бревно) - " + symbols[5]);
-            println(" - Helmet (Шлем) - " + symbols[6]);
+            println(" - Monsters (Монстры) - " + Monster.gMS() + ", " + MiMonster.gMS() + ", " + CoMonster.gMS());
+            println(" - Space (Пустая клетка) - " + symbols[3]);
+            println(" - Beam (Бревно) - " + symbols[4]);
+            println(" - Helmet (Шлем) - " + symbols[5]);
             println(" - Size (Размер поля (оно квадратное)) - " + size);
             println(" - Lives (Жизни героя со старта) - " + lives);
 
@@ -167,7 +138,7 @@ public class Main {
                                 String TCh = input().toUpperCase(); // TCh - trap choice - выбор по поводу ловушки
                                 if (TCh.equals("YES")) {
                                     board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                                    board[0][Hy][Hx] = symbols[4];
+                                    board[0][Hy][Hx] = symbols[3];
                                     lives -= DC;
                                     Hy += Dy;
                                     Hx += Dx;
@@ -184,7 +155,7 @@ public class Main {
                                 String TCh = input().toUpperCase(); // TCh - trap choice - выбор по поводу ловушки
                                 if (TCh.equals("YES")) {
                                     board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                                    board[0][Hy][Hx] = symbols[4];
+                                    board[0][Hy][Hx] = symbols[3];
                                     BC -= DC;
                                     Hy += Dy;
                                     Hx += Dx;
@@ -194,18 +165,23 @@ public class Main {
                                     com += "; Вы отступили от ловушки; Ход остался тот же; Ваша позиция осталась той же";
                                 }
                             }
-                        } else if (Sm.equals(symbols[3]) || Sm.equals(symbols[7])) {
+                        } else if (Sm.equals(MiMonster.gMS()) || Sm.equals(Monster.gMS()) || Sm.equals(CoMonster.gMS())) {
                             board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                            board[0][Hy][Hx] = symbols[4];
+                            board[0][Hy][Hx] = symbols[3];
                             Hy += Dy;
                             Hx += Dx;
                             println("Вы встретили монстра. Чтобы победить, решите задачу:");
                             println("Убежать вы не можете - монстр вас догонит. Если не решите задачу - монстр отнимет у вас жизнь(и)");
-                            boolean TR;
-                            if (Sm.equals(symbols[3])) {
-                                TR = Monster.task(DC); // TR - task result - результат задания
+                            boolean TR;  // TR - task result - результат задания
+                            if (Sm.equals(Monster.gMS())) {
+                                TR = Monster.task(DC);
+                            } else if (Sm.equals(MiMonster.gMS())) {
+                                TR = MiMonster.task(DC);
+                            } else if (Sm.equals(CoMonster.gMS())) {
+                                TR = CoMonster.task(DC);
                             } else {
-                                TR = MMonster.task(DC); // TR - task result - результат задания
+                                println("!Ошибка! TR принудительно равно false");
+                                TR = false;
                             }
                             if (TR) {
                                 com += "; Вы победили монстра";
@@ -213,15 +189,15 @@ public class Main {
                                 lives -= DC;
                                 com += "; Вы проиграли монстру; У вас осталось " + lives + " жизней";
                             }
-                        } else if (Sm.equals(symbols[4]) || Sm.equals(symbols[5]) || Sm.equals(symbols[6])) {
+                        } else if (Sm.equals(symbols[3]) || Sm.equals(symbols[4]) || Sm.equals(symbols[5])) {
                             board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                            board[0][Hy][Hx] = symbols[4];
+                            board[0][Hy][Hx] = symbols[3];
                             Hy += Dy;
                             Hx += Dx;
-                            if (Sm.equals(symbols[5])) {
+                            if (Sm.equals(symbols[4])) {
                                 BC += 1; // ! % & // @ # $ ^ *
                                 com += "; Вы подобрали одно бревно; Количество брёвен - " + BC;
-                            } else if (Sm.equals(symbols[6])) {
+                            } else if (Sm.equals(symbols[5])) {
                                 lives += 1;
                                 com += "; Вы подобрали шлем; Ваше здоровье увеличено на 1; Количество жизней - " + lives;
                             }
@@ -230,12 +206,13 @@ public class Main {
                 }
 
                 if (lives > 0) {
-                    println("-~- Вы дошли до замка! Поздравляю! -~-"); //  У вас осталось " + lives + " жизней; Вы нашли " + BC + "досок, " + HC + "шлемов; Вы попались в " + TC + "ловушек
+                    println("\n-~- Вы дошли до замка! Поздравляю! -~-"); //  У вас осталось " + lives + " жизней; Вы нашли " + BC + "досок, " + HC + "шлемов; Вы попались в " + TC + "ловушек
                 } else {
-                    println("-~- Вы погибли по пути в замок. :( Сочувствую! -~-");
+                    println("\n-~- Вы погибли по пути в замок. :( Сочувствую! -~-");
                 }
             }
-        } println("Вы вышли из игры. Приходите ещё!");
+        }
+        println("Вы вышли из игры. Приходите ещё!");
     }
 
     public static void createBoard(String[][][] board, String[] symbols) {
@@ -248,7 +225,7 @@ public class Main {
 
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < len; j++) {
-                board[0][i][j] = symbols[4];
+                board[0][i][j] = symbols[3];
             }
         }
 
@@ -263,29 +240,38 @@ public class Main {
             if (PC == 0) {
                 int Ty = randint(len); // Ty - trap y - вертикальная координата ловушки
                 int Tx = randint(len); // Tx - trap x - горизонтальная координата ловушки
-                if ((board[0][Ty][Tx].equals(symbols[4])) && (TC > 0)) {
+                if ((board[0][Ty][Tx].equals(symbols[3])) && (TC > 0)) {
                     board[0][Ty][Tx] = symbols[2];
-                    TC--; }
+                    TC--;
+                }
             } else if (PC == 1) {
                 int By = randint(len); // Ty - trap y - вертикальная координата бревна
                 int Bx = randint(len); // Tx - trap x - горизонтальная координата бревна
-                if ((board[0][By][Bx].equals(symbols[4])) && (BC > 0)) {
-                    board[0][By][Bx] = symbols[5];
-                    BC--; }
+                if ((board[0][By][Bx].equals(symbols[3])) && (BC > 0)) {
+                    board[0][By][Bx] = symbols[4];
+                    BC--;
+                }
             } else if (PC == 2) {
                 int Hly = randint(len); // Hly - helmet y - вертикальная координата шлема
                 int Hlx = randint(len); // Hlx - helmet x - горизонтальная координата шлема
-                if ((board[0][Hly][Hlx].equals(symbols[4])) && (HC > 0)) {
-                    board[0][Hly][Hlx] = symbols[6];
-                    HC--; }
+                if ((board[0][Hly][Hlx].equals(symbols[3])) && (HC > 0)) {
+                    board[0][Hly][Hlx] = symbols[5];
+                    HC--;
+                }
             } else {
                 int My = randint(len); // My - monster y - вертикальная координата монстра
                 int Mx = randint(len); // Mx - monster x - горизонтальная координата монстра
-                if ((board[0][My][Mx].equals(symbols[4])) && (MC > 0)) {
+                if ((board[0][My][Mx].equals(symbols[3])) && (MC > 0)) {
                     int MoP = randint(5); // MoP - minus or plus - минус или плюс
-                    if (MoP == 1) { board[0][My][Mx] = symbols[7]; }
-                    else { board[0][My][Mx] = symbols[3]; }
-                    MC --; }
+                    if (MoP == 1) {
+                        board[0][My][Mx] = MiMonster.gMS();
+                    } else if (MoP == 2) {
+                        board[0][My][Mx] = CoMonster.gMS();
+                    } else {
+                        board[0][My][Mx] = Monster.gMS();
+                    }
+                    MC--;
+                }
             }
         }
     }
@@ -300,18 +286,28 @@ public class Main {
             for (int j = 0; j < len; j++) {
                 print(board[i][j] + " | ");
             }
-                println("\n" + wall);
+            println("\n" + wall);
         }
     }
 
 
-    public static void print(String s) { System.out.print(s);}
+    public static void print(String s) {
+        System.out.print(s);
+    }
 
-    public static void println(String s) { print(s + "\n");}
+    public static void println(String s) {
+        print(s + "\n");
+    }
 
-    public static String input() { Scanner scn = new Scanner(System.in); return scn.nextLine();}
+    public static String input() {
+        Scanner scn = new Scanner(System.in);
+        return scn.nextLine();
+    }
 
-    public static int randint(int limit) { Random rnd = new Random(); return rnd.nextInt(limit);}
+    public static int randint(int limit) {
+        Random rnd = new Random();
+        return rnd.nextInt(limit);
+    }
 
     public static boolean isInt(String s) {
         if (s == null || s.isEmpty()) {
@@ -320,49 +316,7 @@ public class Main {
         return s.matches("-?\\d+");
     }
 
-    public static String strI(int s) { return String.valueOf(s); }
+    public static String strI(int s) {
+        return String.valueOf(s);
+    }
 }
-
-//
-//if (person.isMoveCorrect(x, y)) {
-//String next = board[y - 1][x - 1];
-//    if (next.equals("  ")) {
-//board[person.y - 1][person.x - 1] = "  ";
-//        person.move(x, y);
-//step++;
-//        System.out.println("Ход корректный; Новые координаты: " + person.x + ", " + person.y +
-//        "\\nХод номер: " + step);
-//    } else if (next.equals(castle)) {
-//        System.out.println("Вы прошли игру!");
-//        break;
-//                } else {
-//                ... // задача и взаимодействие с монстрами
-//                }
-//                } else {
-//                System.out.println("Некорректный ход");
-//}
-// public int getX(){
-//    return x;
-//}
-//public int getY() {
-//    return y;
-//}
-//public int getLive() {
-//    return live;
-//}
-//public String getImage(){
-//    return image;
-//}
-
-//public void setX(int x) {
-//    this.x = x;
-//}
-//public void setY(int y) {
-//    this.y = y;
-//}
-//public void setLive(int live) {
-//    this.live = live;
-//}
-//public void setImage(String image) {
-//    this.image = image;
-//}
