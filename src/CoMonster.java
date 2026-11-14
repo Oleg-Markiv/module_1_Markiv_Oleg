@@ -5,13 +5,11 @@ public class CoMonster extends Monster { // CoMonster - composition monster - у
     private static String MS = "<"; // MS - monster symbol - символ монстра
 
     static boolean task(int DC) {
-        Random random = new Random();
         Scanner sc = new Scanner(System.in);
+        int[] res = preparation(DC);
 
-        int a = random.nextInt(10 * DC);
-        int b = random.nextInt(10 * DC);
-        int trueAnswer = a * b;
-        System.out.println("Реши пример: " + a + " * " + b + " = ?");
+        int trueAnswer = res[0] * res[1];
+        System.out.println("Решите пример: " + res[0] + " * " + res[1] + " = ?");
         int ans = sc.nextInt();
         return trueAnswer == ans;
     }

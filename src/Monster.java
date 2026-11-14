@@ -4,14 +4,21 @@ import java.util.Scanner;
 public class Monster { // Monster - monster - (плюс)-монстр
     private static String MS = "$"; // MS - monster symbol - символ монстра
 
-    static boolean task(int DC) {
+    static int[] preparation(int DC) {
         Random random = new Random();
-        Scanner sc = new Scanner(System.in);
-
         int a = random.nextInt(100 * DC);
         int b = random.nextInt(100 * DC);
-        int trueAnswer = a + b;
-        System.out.println("Решите пример: " + a + " + " + b + " = ?");
+        int[] res = new int[2];
+        res[0] = a;
+        res[1] = b;
+        return res;
+    }
+    static boolean task(int DC) {
+        Scanner sc = new Scanner(System.in);
+        int[] res = preparation(DC);
+
+        int trueAnswer = res[0] + res[1];
+        System.out.println("Решите пример: " + res[0] + " + " + res[1] + " = ?");
         int ans = sc.nextInt();
         return trueAnswer == ans;
     }
