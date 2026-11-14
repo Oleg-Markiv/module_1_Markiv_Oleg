@@ -25,7 +25,7 @@ public class Main {
 
             int Hy = len - 1; // Hy - hero y - вертикальная координата героя
             int Hx = Integer.parseInt(board[1][0][0]); // Hx - hero x - горизонтальная координата героя
-            String com = ""; // com - comment - комментарий к предыдущему ходу
+            String com = "Здесь будет комментарий к предыдущему ходу"; // com - comment - комментарий к предыдущему ходу
 
             println("\nУсловные обозначения:");
             println(" - Hero (Герой) - " + symbols[0]);
@@ -122,85 +122,45 @@ public class Main {
                     }
 
                     if (moveFlag) {
-                        Sm = board[0][Hy + Dy][Hx + Dx];
-                        S++;
+                        Sm = board[0][Hy + Dy][Hx + Dx]; S++;
                         if (Sm.equals(symbols[2])) {
                             if (BC < DC) {
                                 println("\nВы уверены что хотите походить сюда? У вас нет (недостаточно) брёвен чтобы обезвредить ловушку");
                                 print("(чтобы обезвредить ловушку требуется ещё " + (DC - BC) + " брёвен");
-                                if (lives > DC) {
-                                    println(")");
-                                } else {
-                                    println("; вы можете погибнуть(!), так как у вас недостаточно жизней чтобы выбраться из ловушки)");
-                                }
-                                println("Если уверены - введите 'YES' (без кавычек; любой регистр)");
+                                if (lives > DC) { println(")");
+                                } else { println("; вы можете погибнуть(!), так как у вас недостаточно жизней чтобы выбраться из ловушки)"); }
+                                println("Если уверены - введите 'YES' или '+' (без кавычек; любой регистр)");
                                 println("Если нет - введите любой другой текст");
                                 String TCh = input().toUpperCase(); // TCh - trap choice - выбор по поводу ловушки
-                                if (TCh.equals("YES")) {
-                                    board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                                    board[0][Hy][Hx] = symbols[3];
-                                    lives -= DC;
-                                    Hy += Dy;
-                                    Hx += Dx;
-                                    com += "; Вы попались в ловушку; У вас осталось " + lives + " жизней";
-                                } else {
-                                    S--;
-                                    com += "; Вы отступили от ловушки; Ход остался тот же; Ваша позиция осталась той же";
-                                }
-                            } else {
+                                if (TCh.equals("YES") || TCh.equals("+")) {
+                                    board[0][Hy + Dy][Hx + Dx] = symbols[0]; board[0][Hy][Hx] = symbols[3]; lives -= DC; Hy += Dy; Hx += Dx;
+                                    com += "; Вы попались в ловушку; У вас осталось " + lives + " жизней"; }
+                                else { S--; com += "; Вы отступили от ловушки; Ход остался тот же; Ваша позиция осталась той же"; } }
+                            else {
                                 println("\nВы уверены что хотите походить сюда? У вас достаточно брёвен чтобы обезвредить ловушку");
                                 println("Если выберите обезвредить - бревно(а) будет использовано");
-                                println("Если уверены - введите 'YES' (без кавычек; любой регистр)");
+                                println("Если уверены - введите 'YES' или '+' (без кавычек; любой регистр)");
                                 println("Если нет - введите любой другой текст");
                                 String TCh = input().toUpperCase(); // TCh - trap choice - выбор по поводу ловушки
-                                if (TCh.equals("YES")) {
-                                    board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                                    board[0][Hy][Hx] = symbols[3];
-                                    BC -= DC;
-                                    Hy += Dy;
-                                    Hx += Dx;
-                                    com += "; Вы обезвредили ловушку; У вас осталось " + BC + " брёвен";
-                                } else {
-                                    S--;
-                                    com += "; Вы отступили от ловушки; Ход остался тот же; Ваша позиция осталась той же";
-                                }
-                            }
-                        } else if (Sm.equals(MiMonster.gMS()) || Sm.equals(Monster.gMS()) || Sm.equals(CoMonster.gMS())) {
-                            board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                            board[0][Hy][Hx] = symbols[3];
-                            Hy += Dy;
-                            Hx += Dx;
+                                if (TCh.equals("YES") || TCh.equals("+")) {
+                                    board[0][Hy + Dy][Hx + Dx] = symbols[0]; board[0][Hy][Hx] = symbols[3]; BC -= DC; Hy += Dy; Hx += Dx;
+                                    com += "; Вы обезвредили ловушку; У вас осталось " + BC + " брёвен"; }
+                                else { S--; com += "; Вы отступили от ловушки; Ход остался тот же; Ваша позиция осталась той же"; } } }
+                        else if (Sm.equals(MiMonster.gMS()) || Sm.equals(Monster.gMS()) || Sm.equals(CoMonster.gMS())) {
+                            board[0][Hy + Dy][Hx + Dx] = symbols[0]; board[0][Hy][Hx] = symbols[3]; Hy += Dy; Hx += Dx;
                             println("Вы встретили монстра. Чтобы победить, решите задачу:");
                             println("Убежать вы не можете - монстр вас догонит. Если не решите задачу - монстр отнимет у вас жизнь(и)");
                             boolean TR;  // TR - task result - результат задания
-                            if (Sm.equals(Monster.gMS())) {
-                                TR = Monster.task(DC);
-                            } else if (Sm.equals(MiMonster.gMS())) {
-                                TR = MiMonster.task(DC);
-                            } else if (Sm.equals(CoMonster.gMS())) {
-                                TR = CoMonster.task(DC);
-                            } else {
-                                println("!Ошибка! TR принудительно равно false");
-                                TR = false;
-                            }
-                            if (TR) {
-                                com += "; Вы победили монстра";
-                            } else {
-                                lives -= DC;
-                                com += "; Вы проиграли монстру; У вас осталось " + lives + " жизней";
-                            }
+                            if (Sm.equals(Monster.gMS())) { TR = Monster.task(DC);
+                            } else if (Sm.equals(MiMonster.gMS())) { TR = MiMonster.task(DC);
+                            } else if (Sm.equals(CoMonster.gMS())) { TR = CoMonster.task(DC);
+                            } else { println("!Ошибка! TR принудительно равно false"); TR = false; }
+                            if (TR) { com += "; Вы победили монстра";
+                            } else { lives -= DC; com += "; Вы проиграли монстру; У вас осталось " + lives + " жизней"; }
                         } else if (Sm.equals(symbols[3]) || Sm.equals(symbols[4]) || Sm.equals(symbols[5])) {
-                            board[0][Hy + Dy][Hx + Dx] = symbols[0];
-                            board[0][Hy][Hx] = symbols[3];
-                            Hy += Dy;
-                            Hx += Dx;
-                            if (Sm.equals(symbols[4])) {
-                                BC += 1; // ! % & // @ # $ ^ *
-                                com += "; Вы подобрали одно бревно; Количество брёвен - " + BC;
-                            } else if (Sm.equals(symbols[5])) {
-                                lives += 1;
-                                com += "; Вы подобрали шлем; Ваше здоровье увеличено на 1; Количество жизней - " + lives;
-                            }
+                            board[0][Hy + Dy][Hx + Dx] = symbols[0]; board[0][Hy][Hx] = symbols[3]; Hy += Dy; Hx += Dx;
+                            if (Sm.equals(symbols[4])) { BC += 1; com += "; Вы подобрали одно бревно; Количество брёвен - " + BC;
+                            } else if (Sm.equals(symbols[5])) { lives += 1; com += "; Вы подобрали шлем; Ваше здоровье увеличено на 1; Количество жизней - " + lives; }
                         }
                     }
                 }
@@ -221,7 +181,7 @@ public class Main {
         int MC = len * 2; // MC - monster counter - количество монстров
         int BC = len / 2 + 1; // BC - beam counter - количество брёвен
         int HC = len / 3; // HC - helmet counter - количество шлемов
-//        int ASC = TC + MC + BC + HC; // ASC - all sum of counters - количество всех объектов
+//        int ASCII = TC + MC + BC + HC; // ASCII - all sum of counters of items and items ;) - количество всех объектов
 
         for (int i = 0; i < len; i++) {
             for (int j = 0; j < len; j++) {
@@ -229,47 +189,34 @@ public class Main {
             }
         }
 
-        int Hx = randint(len); // Hx - hero x - горизонтальная координата героя
+        int Hx = randInt(len); // Hx - hero x - горизонтальная координата героя
         board[0][len - 1][Hx] = symbols[0];
         board[1][0][0] = Integer.toString(Hx);
-        int Cx = randint(len); // Cx - castle x - горизонтальная координата замка
+        int Cx = randInt(len); // Cx - castle x - горизонтальная координата замка
         board[0][0][Cx] = symbols[1];
 
         while (TC + MC + BC + HC > 0) {
-            int PC = randint(6); // PC - place choice - выбор того, что будет стоять выбранном месте
+            int PC = randInt(6); // PC - place choice - выбор того, что будет стоять выбранном месте
+            int Ix = randInt(len); // Ix - item x - горизонтальная координата предмета, который будет выбран
+            int Iy = randInt(len); // Ix - item y - вертикальная координата предмета, который будет выбран
             if (PC == 0) {
-                int Ty = randint(len); // Ty - trap y - вертикальная координата ловушки
-                int Tx = randint(len); // Tx - trap x - горизонтальная координата ловушки
-                if ((board[0][Ty][Tx].equals(symbols[3])) && (TC > 0)) {
-                    board[0][Ty][Tx] = symbols[2];
-                    TC--;
-                }
+                if ((board[0][Iy][Ix].equals(symbols[3])) && (TC > 0)) {
+                    board[0][Iy][Ix] = symbols[2];
+                    TC--; }
             } else if (PC == 1) {
-                int By = randint(len); // Ty - trap y - вертикальная координата бревна
-                int Bx = randint(len); // Tx - trap x - горизонтальная координата бревна
-                if ((board[0][By][Bx].equals(symbols[3])) && (BC > 0)) {
-                    board[0][By][Bx] = symbols[4];
-                    BC--;
-                }
+                if ((board[0][Iy][Ix].equals(symbols[3])) && (BC > 0)) {
+                    board[0][Iy][Ix] = symbols[4];
+                    BC--; }
             } else if (PC == 2) {
-                int Hly = randint(len); // Hly - helmet y - вертикальная координата шлема
-                int Hlx = randint(len); // Hlx - helmet x - горизонтальная координата шлема
-                if ((board[0][Hly][Hlx].equals(symbols[3])) && (HC > 0)) {
-                    board[0][Hly][Hlx] = symbols[5];
-                    HC--;
-                }
+                if ((board[0][Iy][Ix].equals(symbols[3])) && (HC > 0)) {
+                    board[0][Iy][Ix] = symbols[5];
+                    HC--; }
             } else {
-                int My = randint(len); // My - monster y - вертикальная координата монстра
-                int Mx = randint(len); // Mx - monster x - горизонтальная координата монстра
-                if ((board[0][My][Mx].equals(symbols[3])) && (MC > 0)) {
-                    int MoP = randint(5); // MoP - minus or plus - минус или плюс
-                    if (MoP == 1) {
-                        board[0][My][Mx] = MiMonster.gMS();
-                    } else if (MoP == 2) {
-                        board[0][My][Mx] = CoMonster.gMS();
-                    } else {
-                        board[0][My][Mx] = Monster.gMS();
-                    }
+                if ((board[0][Iy][Ix].equals(symbols[3])) && (MC > 0)) {
+                    int MT = randInt(5); // MT - monster type - тип монстра (не особо важно, сколько типов монстров существует
+                    if (MT == 1) { board[0][Iy][Ix] = MiMonster.gMS(); }
+                    else if (MT == 2) { board[0][Iy][Ix] = CoMonster.gMS(); }
+                    else { board[0][Iy][Ix] = Monster.gMS(); }
                     MC--;
                 }
             }
@@ -291,32 +238,18 @@ public class Main {
     }
 
 
-    public static void print(String s) {
-        System.out.print(s);
-    }
+    public static void print(String s) { System.out.print(s); }
 
-    public static void println(String s) {
-        print(s + "\n");
-    }
+    public static void println(String s) { print(s + "\n"); }
 
-    public static String input() {
-        Scanner scn = new Scanner(System.in);
-        return scn.nextLine();
-    }
+    public static String input() { Scanner scn = new Scanner(System.in); return scn.nextLine(); }
 
-    public static int randint(int limit) {
-        Random rnd = new Random();
-        return rnd.nextInt(limit);
-    }
+    public static int randInt(int limit) { Random rnd = new Random(); return rnd.nextInt(limit); }
 
     public static boolean isInt(String s) {
         if (s == null || s.isEmpty()) {
             return false;
         }
         return s.matches("-?\\d+");
-    }
-
-    public static String strI(int s) {
-        return String.valueOf(s);
     }
 }
